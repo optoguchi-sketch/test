@@ -1,4 +1,4 @@
-const faqs = [
+let faqs = [
   {
     id: 1,
     category: "hr",
@@ -124,11 +124,16 @@ const renderModalCategories = () => {
   modalCategoryChips.innerHTML = categories
     .map(
       (category) => `
-      <button class="chip ${selectedCategory === category.id ? "is-active" : ""}" type="button" data-modal-category="${
-        category.id
-      }">
-        ${category.label}
-      </button>
+      <div class="category-row">
+        <button class="chip ${selectedCategory === category.id ? "is-active" : ""}" type="button" data-modal-category="${
+          category.id
+        }">
+          ${category.label}
+        </button>
+        <button class="category-delete" type="button" data-category-delete="${category.id}">
+          削除
+        </button>
+      </div>
     `
     )
     .join("");
@@ -197,7 +202,9 @@ faqList.addEventListener("click", (event) => {
     alert("デモ: FAQの編集画面へ遷移します。");
   }
   if (event.target.matches("[data-delete]")) {
-    alert("デモ: FAQを削除しました。");
+    const targetId = Number(event.target.dataset.delete);
+    faqs = faqs.filter((faq) => faq.id !== targetId);
+    applyFilters();
   }
 });
 
@@ -229,6 +236,24 @@ modalCategoryChips.addEventListener("click", (event) => {
   if (!target.matches("[data-modal-category]")) return;
   selectedCategory = target.dataset.modalCategory;
   renderModalCategories();
+});
+
+modalCategoryChips.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!target.matches("[data-category-delete]")) return;
+  const id = target.dataset.categoryDelete;
+  const index = categories.findIndex((category) => category.id === id);
+  if (index === -1) return;
+  categories.splice(index, 1);
+  faqs = faqs.filter((faq) => faq.category !== id);
+  if (!categories.find((category) => category.id === selectedCategory)) {
+    selectedCategory = categories[0]?.id ?? "general";
+  }
+  if (activeCategory === id) {
+    activeCategory = "all";
+  }
+  renderModalCategories();
+  applyFilters();
 });
 
 addCategoryButton.addEventListener("click", () => {
