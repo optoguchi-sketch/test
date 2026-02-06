@@ -98,6 +98,8 @@ const modal = document.getElementById("faqModal");
 const openModalButton = document.getElementById("openModal");
 const createFaqButton = document.getElementById("createFaq");
 const menuButton = document.getElementById("menuButton");
+const mainMenu = document.getElementById("mainMenu");
+const menuOpenModal = document.getElementById("menuOpenModal");
 
 let activeCategory = "all";
 let selectedCategory = categories[0]?.id ?? "general";
@@ -115,6 +117,9 @@ const getCategoryCounts = () =>
     acc[category.id] = faqs.filter((faq) => faq.category === category.id).length;
     return acc;
   }, {});
+
+const getCategoriesForGroup = (groupId) =>
+  categories.filter((category) => category.group === groupId);
 
 const renderCategoryFilters = () => {
   const counts = getCategoryCounts();
@@ -170,7 +175,14 @@ const renderGroupChips = () => {
 };
 
 const renderModalCategories = () => {
-  modalCategoryChips.innerHTML = categories
+  const visibleCategories = getCategoriesForGroup(selectedGroup);
+  if (selectedGroup === "other") {
+    const uncategorized = categories.find((category) => category.id === "uncategorized");
+    if (uncategorized && !visibleCategories.includes(uncategorized)) {
+      visibleCategories.push(uncategorized);
+    }
+  }
+  modalCategoryChips.innerHTML = visibleCategories
     .map(
       (category) => `
       <div class="category-row">
@@ -341,7 +353,13 @@ modalGroupChips.addEventListener("click", (event) => {
   const target = event.target;
   if (!target.matches("[data-group]")) return;
   selectedGroup = target.dataset.group;
+  const groupCategories = getCategoriesForGroup(selectedGroup);
+  const selectedStillVisible = groupCategories.find((category) => category.id === selectedCategory);
+  if (!selectedStillVisible) {
+    selectedCategory = groupCategories[0]?.id ?? "uncategorized";
+  }
   renderGroupChips();
+  renderModalCategories();
 });
 
 addCategoryButton.addEventListener("click", () => {
@@ -382,8 +400,27 @@ createFaqButton.addEventListener("click", () => {
   closeModal();
 });
 
-menuButton.addEventListener("click", () => {
-  alert("デモ: メニューを開きます。");
+const openMenu = () => {
+  mainMenu.classList.add("is-open");
+  mainMenu.setAttribute("aria-hidden", "false");
+};
+
+const closeMenu = () => {
+  mainMenu.classList.remove("is-open");
+  mainMenu.setAttribute("aria-hidden", "true");
+};
+
+menuButton.addEventListener("click", openMenu);
+mainMenu.addEventListener("click", (event) => {
+  if (event.target.dataset.menuClose === "true") {
+    closeMenu();
+  }
+});
+menuOpenModal.addEventListener("click", () => {
+  closeMenu();
+  renderGroupChips();
+  renderModalCategories();
+  openModal();
 });
 
 renderCategoryFilters();
