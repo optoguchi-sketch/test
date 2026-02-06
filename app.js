@@ -97,9 +97,6 @@ const addCategoryButton = document.getElementById("addCategory");
 const modal = document.getElementById("faqModal");
 const openModalButton = document.getElementById("openModal");
 const createFaqButton = document.getElementById("createFaq");
-const menuButton = document.getElementById("menuButton");
-const mainMenu = document.getElementById("mainMenu");
-const menuOpenModal = document.getElementById("menuOpenModal");
 
 let activeCategory = "all";
 let selectedCategory = categories[0]?.id ?? "general";
@@ -398,29 +395,6 @@ createFaqButton.addEventListener("click", () => {
   document.getElementById("answerInput").value = "";
   applyFilters();
   closeModal();
-});
-
-const openMenu = () => {
-  mainMenu.classList.add("is-open");
-  mainMenu.setAttribute("aria-hidden", "false");
-};
-
-const closeMenu = () => {
-  mainMenu.classList.remove("is-open");
-  mainMenu.setAttribute("aria-hidden", "true");
-};
-
-menuButton.addEventListener("click", openMenu);
-mainMenu.addEventListener("click", (event) => {
-  if (event.target.dataset.menuClose === "true") {
-    closeMenu();
-  }
-});
-menuOpenModal.addEventListener("click", () => {
-  closeMenu();
-  renderGroupChips();
-  renderModalCategories();
-  openModal();
 });
 
 renderCategoryFilters();

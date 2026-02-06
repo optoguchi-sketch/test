@@ -7,31 +7,13 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="background-motion" aria-hidden="true"></div>
     <div class="page">
       <div class="topbar">
         <div class="topbar__brand">
           <span class="topbar__text">オフィスパートナーFAQポータル</span>
         </div>
-        <button class="topbar__menu" id="menuButton" aria-label="メニューを開く">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
       </div>
-      <nav class="menu" id="mainMenu" aria-hidden="true">
-        <div class="menu__backdrop" data-menu-close="true"></div>
-        <div class="menu__panel" role="dialog" aria-modal="true">
-          <div class="menu__header">
-            <h2>メニュー</h2>
-            <button class="icon-button" data-menu-close="true" aria-label="閉じる">✕</button>
-          </div>
-          <ul class="menu__list">
-            <li><a href="#categoryFilters">カテゴリ一覧</a></li>
-            <li><a href="#faqList">FAQ一覧</a></li>
-            <li><button class="link-button" id="menuOpenModal">新規FAQを作成</button></li>
-          </ul>
-        </div>
-      </nav>
       <header class="hero">
         <div class="hero__glow"></div>
         <div class="hero__content">

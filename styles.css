@@ -23,14 +23,51 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at 15% 10%, rgba(39, 211, 247, 0.15), transparent 45%),
-    radial-gradient(circle at 80% 20%, rgba(90, 120, 255, 0.18), transparent 50%),
-    linear-gradient(160deg, var(--bg-start), var(--bg-mid) 45%, var(--bg-end));
+  background: radial-gradient(circle at 15% 10%, rgba(39, 211, 247, 0.2), transparent 45%),
+    radial-gradient(circle at 75% 20%, rgba(167, 139, 250, 0.22), transparent 48%),
+    radial-gradient(circle at 85% 70%, rgba(96, 165, 250, 0.18), transparent 52%),
+    linear-gradient(160deg, var(--bg-start), #0b1b3b 40%, var(--bg-mid) 70%, var(--bg-end));
   color: var(--text-primary);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.background-motion {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.background-motion::before,
+.background-motion::after {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(0);
+  opacity: 0.35;
+  animation: drift 18s ease-in-out infinite;
+}
+
+.background-motion::before {
+  top: -120px;
+  left: -80px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.4), transparent 65%);
+}
+
+.background-motion::after {
+  bottom: -160px;
+  right: -120px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.4), transparent 65%);
+  animation-delay: -6s;
 }
 
 .page {
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
 .topbar {
@@ -38,7 +75,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 20px 24px 0;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -53,97 +90,6 @@ body {
 .topbar__text {
   font-size: 1rem;
   letter-spacing: 0.02em;
-}
-
-.topbar__menu {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  background: rgba(15, 23, 42, 0.6);
-  display: grid;
-  gap: 5px;
-  place-content: center;
-  cursor: pointer;
-}
-
-.topbar__menu span {
-  width: 18px;
-  height: 2px;
-  background: var(--text-primary);
-  border-radius: 999px;
-}
-
-.menu {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: stretch;
-  justify-content: flex-end;
-  z-index: 12;
-}
-
-.menu.is-open {
-  display: flex;
-}
-
-.menu__backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(4, 8, 20, 0.7);
-  backdrop-filter: blur(4px);
-}
-
-.menu__panel {
-  position: relative;
-  z-index: 1;
-  width: min(320px, 85vw);
-  background: linear-gradient(160deg, rgba(10, 20, 44, 0.98), rgba(7, 14, 30, 0.98));
-  border-left: 1px solid rgba(39, 211, 247, 0.25);
-  padding: 24px;
-  display: grid;
-  gap: 18px;
-  box-shadow: -20px 0 60px rgba(5, 10, 24, 0.65);
-  animation: fadeLeft 0.3s ease-out;
-}
-
-.menu__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.menu__header h2 {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.menu__list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 12px;
-}
-
-.menu__list a,
-.menu__list button {
-  color: var(--text-primary);
-  text-decoration: none;
-  background: rgba(148, 163, 184, 0.12);
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  border-radius: 12px;
-  padding: 10px 14px;
-  display: block;
-  text-align: left;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-.menu__list a:hover,
-.menu__list button:hover {
-  border-color: rgba(39, 211, 247, 0.45);
-  color: var(--accent);
 }
 
 .hero {
@@ -254,7 +200,7 @@ body {
 }
 
 .content {
-  max-width: 980px;
+  max-width: min(1200px, 92vw);
   margin: 0 auto;
   padding: 0 24px 80px;
   display: grid;
@@ -676,14 +622,12 @@ textarea {
   }
 }
 
-@keyframes fadeLeft {
+@keyframes drift {
   from {
-    opacity: 0;
-    transform: translateX(16px);
+    transform: translateY(0) translateX(0);
   }
   to {
-    opacity: 1;
-    transform: translateX(0);
+    transform: translateY(18px) translateX(20px);
   }
 }
 
@@ -702,5 +646,11 @@ textarea {
 
   .faq-item__toggle {
     justify-self: end;
+  }
+}
+
+@media (min-width: 1400px) {
+  .content {
+    max-width: 1280px;
   }
 }
