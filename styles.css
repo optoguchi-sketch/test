@@ -338,6 +338,12 @@ body {
   gap: 16px;
 }
 
+.faq-group-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .faq-group {
   display: grid;
   gap: 12px;
@@ -444,14 +450,16 @@ body {
 .faq-item__content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.45s ease;
+  transition: max-height 0.55s ease, opacity 0.35s ease, padding 0.35s ease;
+  opacity: 0;
   border-top: 1px solid rgba(148, 163, 184, 0.15);
   padding: 0 24px;
 }
 
 .faq-item.is-open .faq-item__content {
-  max-height: 300px;
+  max-height: 520px;
   padding: 18px 24px 22px;
+  opacity: 1;
 }
 
 .faq-item__content p {
@@ -673,3 +681,6 @@ textarea {
     max-width: 1280px;
   }
 }
+  .faq-group-row {
+    grid-template-columns: 1fr;
+  }

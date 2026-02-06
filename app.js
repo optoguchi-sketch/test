@@ -230,28 +230,44 @@ const createFaqCard = (faq) => {
   return card;
 };
 
+const buildGroupSection = (group, items) => {
+  const groupItems = items.filter((faq) => faq.group === group.id);
+  const section = document.createElement("section");
+  section.className = "faq-group";
+  section.innerHTML = `
+    <header class="faq-group__header">
+      <h3>${group.label}</h3>
+      <span>${groupItems.length}件</span>
+    </header>
+  `;
+  const list = document.createElement("div");
+  list.className = "faq-group__list";
+  if (groupItems.length === 0) {
+    list.innerHTML = `<p class="faq-group__empty">該当FAQがありません</p>`;
+  } else {
+    groupItems.forEach((faq) => list.appendChild(createFaqCard(faq)));
+  }
+  section.appendChild(list);
+  return section;
+};
+
 const renderFaqs = (items) => {
   faqList.innerHTML = "";
-  faqGroups.forEach((group) => {
-    const groupItems = items.filter((faq) => faq.group === group.id);
-    const section = document.createElement("section");
-    section.className = "faq-group";
-    section.innerHTML = `
-      <header class="faq-group__header">
-        <h3>${group.label}</h3>
-        <span>${groupItems.length}件</span>
-      </header>
-    `;
-    const list = document.createElement("div");
-    list.className = "faq-group__list";
-    if (groupItems.length === 0) {
-      list.innerHTML = `<p class="faq-group__empty">該当FAQがありません</p>`;
-    } else {
-      groupItems.forEach((faq) => list.appendChild(createFaqCard(faq)));
-    }
-    section.appendChild(list);
-    faqList.appendChild(section);
-  });
+  const topRow = document.createElement("div");
+  topRow.className = "faq-group-row";
+  const mailGroup = faqGroups.find((group) => group.id === "mail");
+  const listingGroup = faqGroups.find((group) => group.id === "listing");
+  if (mailGroup) {
+    topRow.appendChild(buildGroupSection(mailGroup, items));
+  }
+  if (listingGroup) {
+    topRow.appendChild(buildGroupSection(listingGroup, items));
+  }
+  faqList.appendChild(topRow);
+  const otherGroup = faqGroups.find((group) => group.id === "other");
+  if (otherGroup) {
+    faqList.appendChild(buildGroupSection(otherGroup, items));
+  }
 };
 
 const applyFilters = () => {
@@ -280,7 +296,16 @@ categoryFilters.addEventListener("click", (event) => {
 faqList.addEventListener("click", (event) => {
   const header = event.target.closest("[data-toggle]");
   if (header) {
-    header.parentElement.classList.toggle("is-open");
+    const card = header.parentElement;
+    const content = card.querySelector(".faq-item__content");
+    const isOpen = card.classList.toggle("is-open");
+    if (content) {
+      if (isOpen) {
+        content.style.maxHeight = `${content.scrollHeight}px`;
+      } else {
+        content.style.maxHeight = "0px";
+      }
+    }
   }
   if (event.target.matches("[data-edit]")) {
     alert("デモ: FAQの編集画面へ遷移します。");
