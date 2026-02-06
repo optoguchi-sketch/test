@@ -92,6 +92,10 @@ body {
   letter-spacing: 0.02em;
 }
 
+.topbar__accent {
+  color: var(--accent);
+}
+
 .hero {
   position: relative;
   padding: 90px 24px 60px;
@@ -410,6 +414,21 @@ body {
   background: rgba(39, 211, 247, 0.18);
   color: var(--accent);
   font-weight: 600;
+}
+
+.faq-item__category--mail {
+  background: rgba(56, 189, 248, 0.2);
+  color: var(--group-mail);
+}
+
+.faq-item__category--listing {
+  background: rgba(251, 191, 36, 0.2);
+  color: var(--group-listing);
+}
+
+.faq-item__category--other {
+  background: rgba(167, 139, 250, 0.18);
+  color: var(--group-other);
 }
 
 .faq-item__title {

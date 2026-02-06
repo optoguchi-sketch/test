@@ -204,11 +204,12 @@ const renderModalCategories = () => {
 const createFaqCard = (faq) => {
   const card = document.createElement("article");
   card.className = "faq-item";
+  const groupLabelClass = `faq-item__category--${faq.group ?? "other"}`;
   card.innerHTML = `
     <div class="faq-item__header" data-toggle="${faq.id}">
       <div>
         <div class="faq-item__meta">
-          <span class="faq-item__category">${faq.categoryLabel}</span>
+          <span class="faq-item__category ${groupLabelClass}">${faq.categoryLabel}</span>
           <span>更新日: ${faq.updatedAt}</span>
         </div>
         <h3 class="faq-item__title">${faq.question}</h3>
