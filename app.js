@@ -238,13 +238,11 @@ modal.addEventListener("click", (event) => {
 
 modalCategoryChips.addEventListener("click", (event) => {
   const target = event.target;
-  if (!target.matches("[data-modal-category]")) return;
-  selectedCategory = target.dataset.modalCategory;
-  renderModalCategories();
-});
-
-modalCategoryChips.addEventListener("click", (event) => {
-  const target = event.target;
+  if (target.matches("[data-modal-category]")) {
+    selectedCategory = target.dataset.modalCategory;
+    renderModalCategories();
+    return;
+  }
   if (!target.matches("[data-category-delete]")) return;
   const id = target.dataset.categoryDelete;
   const index = categories.findIndex((category) => category.id === id);
@@ -263,7 +261,7 @@ modalCategoryChips.addEventListener("click", (event) => {
     selectedCategory = categories[0]?.id ?? "general";
   }
   if (activeCategory === id) {
-    activeCategory = "all";
+    activeCategory = "uncategorized";
   }
   renderModalCategories();
   applyFilters();

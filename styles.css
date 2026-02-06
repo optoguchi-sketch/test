@@ -214,8 +214,8 @@ body {
 }
 
 .faq-item {
-  background: linear-gradient(155deg, rgba(16, 24, 48, 0.95), rgba(10, 16, 36, 0.95));
-  border: 1px solid var(--card-border);
+  background: linear-gradient(155deg, rgba(27, 38, 72, 0.98), rgba(18, 28, 58, 0.98));
+  border: 1px solid rgba(120, 140, 190, 0.35);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: var(--shadow);
