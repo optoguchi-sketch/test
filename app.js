@@ -1,6 +1,7 @@
 let faqs = [
   {
     id: 1,
+    group: "mail",
     category: "hr",
     categoryLabel: "人事・労務",
     question: "有給休暇の申請方法を教えてください",
@@ -10,6 +11,7 @@ let faqs = [
   },
   {
     id: 2,
+    group: "mail",
     category: "it",
     categoryLabel: "IT・システム",
     question: "PCの故障時はどこに連絡すればよいですか？",
@@ -19,6 +21,7 @@ let faqs = [
   },
   {
     id: 3,
+    group: "other",
     category: "general",
     categoryLabel: "一般",
     question: "名刺の発注方法は？",
@@ -28,6 +31,7 @@ let faqs = [
   },
   {
     id: 4,
+    group: "listing",
     category: "finance",
     categoryLabel: "経理・財務",
     question: "経費精算の締め日はいつですか？",
@@ -37,6 +41,7 @@ let faqs = [
   },
   {
     id: 5,
+    group: "listing",
     category: "legal",
     categoryLabel: "法務・コンプライアンス",
     question: "契約書のレビュー依頼フローを教えてください",
@@ -46,6 +51,7 @@ let faqs = [
   },
   {
     id: 6,
+    group: "other",
     category: "general",
     categoryLabel: "一般",
     question: "来客時の受付手順は？",
@@ -55,6 +61,7 @@ let faqs = [
   },
   {
     id: 7,
+    group: "mail",
     category: "hr",
     categoryLabel: "人事・労務",
     question: "在宅勤務の申請ルールを知りたいです",
@@ -73,10 +80,17 @@ const categories = [
   { id: "uncategorized", label: "未分類" },
 ];
 
+const faqGroups = [
+  { id: "mail", label: "メール対応系" },
+  { id: "listing", label: "出品系" },
+  { id: "other", label: "その他" },
+];
+
 const faqList = document.getElementById("faqList");
 const searchInput = document.getElementById("searchInput");
 const resultCount = document.getElementById("resultCount");
 const categoryFilters = document.getElementById("categoryFilters");
+const modalGroupChips = document.getElementById("modalGroupChips");
 const modalCategoryChips = document.getElementById("modalCategoryChips");
 const newCategoryInput = document.getElementById("newCategoryInput");
 const addCategoryButton = document.getElementById("addCategory");
@@ -86,6 +100,7 @@ const createFaqButton = document.getElementById("createFaq");
 
 let activeCategory = "all";
 let selectedCategory = categories[0]?.id ?? "general";
+let selectedGroup = faqGroups[0]?.id ?? "other";
 
 const slugifyCategory = (value) =>
   value
@@ -121,6 +136,20 @@ const renderCategoryFilters = () => {
   `;
 };
 
+const renderGroupChips = () => {
+  modalGroupChips.innerHTML = faqGroups
+    .map(
+      (group) => `
+      <button class="chip ${selectedGroup === group.id ? "is-active" : ""}" type="button" data-group="${
+        group.id
+      }">
+        ${group.label}
+      </button>
+    `
+    )
+    .join("");
+};
+
 const renderModalCategories = () => {
   modalCategoryChips.innerHTML = categories
     .map(
@@ -144,34 +173,55 @@ const renderModalCategories = () => {
     .join("");
 };
 
+const createFaqCard = (faq) => {
+  const card = document.createElement("article");
+  card.className = "faq-item";
+  card.innerHTML = `
+    <div class="faq-item__header" data-toggle="${faq.id}">
+      <div>
+        <div class="faq-item__meta">
+          <span class="faq-item__category">${faq.categoryLabel}</span>
+          <span>更新日: ${faq.updatedAt}</span>
+        </div>
+        <h3 class="faq-item__title">${faq.question}</h3>
+      </div>
+      <div class="faq-item__toggle">⌄</div>
+    </div>
+    <div class="faq-item__content">
+      <p>${faq.answer}</p>
+      <div class="faq-item__footer">
+        <span>スタッフがいつでも編集可能</span>
+        <div class="faq-item__actions">
+          <button class="link-button" data-edit="${faq.id}">編集</button>
+          <button class="link-button" data-delete="${faq.id}">削除</button>
+        </div>
+      </div>
+    </div>
+  `;
+  return card;
+};
+
 const renderFaqs = (items) => {
   faqList.innerHTML = "";
-  items.forEach((faq) => {
-    const card = document.createElement("article");
-    card.className = "faq-item";
-    card.innerHTML = `
-      <div class="faq-item__header" data-toggle="${faq.id}">
-        <div>
-          <div class="faq-item__meta">
-            <span class="faq-item__category">${faq.categoryLabel}</span>
-            <span>更新日: ${faq.updatedAt}</span>
-          </div>
-          <h3 class="faq-item__title">${faq.question}</h3>
-        </div>
-        <div class="faq-item__toggle">⌄</div>
-      </div>
-      <div class="faq-item__content">
-        <p>${faq.answer}</p>
-        <div class="faq-item__footer">
-          <span>スタッフがいつでも編集可能</span>
-          <div class="faq-item__actions">
-            <button class="link-button" data-edit="${faq.id}">編集</button>
-            <button class="link-button" data-delete="${faq.id}">削除</button>
-          </div>
-        </div>
-      </div>
+  faqGroups.forEach((group) => {
+    const groupItems = items.filter((faq) => faq.group === group.id);
+    const section = document.createElement("section");
+    section.className = "faq-group";
+    section.innerHTML = `
+      <header class="faq-group__header">
+        <h3>${group.label}</h3>
+        <span>${groupItems.length}件</span>
+      </header>
     `;
-    faqList.appendChild(card);
+    const list = document.createElement("div");
+    list.className = "faq-group__list";
+    if (groupItems.length === 0) {
+      list.innerHTML = `<p class="faq-group__empty">該当FAQがありません</p>`;
+    } else {
+      groupItems.forEach((faq) => list.appendChild(createFaqCard(faq)));
+    }
+    section.appendChild(list);
+    faqList.appendChild(section);
   });
 };
 
@@ -226,6 +276,7 @@ const closeModal = () => {
 openModalButton.addEventListener("click", () => {
   openModalButton.classList.add("is-pulse");
   setTimeout(() => openModalButton.classList.remove("is-pulse"), 500);
+  renderGroupChips();
   renderModalCategories();
   openModal();
 });
@@ -267,6 +318,13 @@ modalCategoryChips.addEventListener("click", (event) => {
   applyFilters();
 });
 
+modalGroupChips.addEventListener("click", (event) => {
+  const target = event.target;
+  if (!target.matches("[data-group]")) return;
+  selectedGroup = target.dataset.group;
+  renderGroupChips();
+});
+
 addCategoryButton.addEventListener("click", () => {
   const label = newCategoryInput.value.trim();
   if (!label) return;
@@ -289,8 +347,10 @@ createFaqButton.addEventListener("click", () => {
     return;
   }
   const category = categories.find((item) => item.id === selectedCategory) ?? categories[0];
+  const group = faqGroups.find((item) => item.id === selectedGroup) ?? faqGroups[0];
   faqs.unshift({
     id: Date.now(),
+    group: group.id,
     category: category.id,
     categoryLabel: category.label,
     question,
