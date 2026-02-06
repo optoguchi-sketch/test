@@ -72,18 +72,18 @@ let faqs = [
 ];
 
 const categories = [
-  { id: "general", label: "一般" },
-  { id: "hr", label: "人事・労務" },
-  { id: "it", label: "IT・システム" },
-  { id: "finance", label: "経理・財務" },
-  { id: "legal", label: "法務・コンプライアンス" },
-  { id: "uncategorized", label: "未分類" },
+  { id: "general", label: "一般", group: "other" },
+  { id: "hr", label: "人事・労務", group: "mail" },
+  { id: "it", label: "IT・システム", group: "mail" },
+  { id: "finance", label: "経理・財務", group: "listing" },
+  { id: "legal", label: "法務・コンプライアンス", group: "listing" },
+  { id: "uncategorized", label: "未分類", group: "other" },
 ];
 
 const faqGroups = [
-  { id: "mail", label: "メール対応系" },
-  { id: "listing", label: "出品系" },
-  { id: "other", label: "その他" },
+  { id: "mail", label: "メール対応系", icon: "📨", colorClass: "chip--mail" },
+  { id: "listing", label: "出品系", icon: "🏷️", colorClass: "chip--listing" },
+  { id: "other", label: "その他", icon: "📌", colorClass: "chip--other" },
 ];
 
 const faqList = document.getElementById("faqList");
@@ -97,6 +97,7 @@ const addCategoryButton = document.getElementById("addCategory");
 const modal = document.getElementById("faqModal");
 const openModalButton = document.getElementById("openModal");
 const createFaqButton = document.getElementById("createFaq");
+const menuButton = document.getElementById("menuButton");
 
 let activeCategory = "all";
 let selectedCategory = categories[0]?.id ?? "general";
@@ -118,21 +119,38 @@ const getCategoryCounts = () =>
 const renderCategoryFilters = () => {
   const counts = getCategoryCounts();
   const totalCount = faqs.length;
+  const groupSections = faqGroups
+    .map((group) => {
+      const groupCategories = categories.filter((category) => category.group === group.id);
+      if (groupCategories.length === 0) return "";
+      return `
+        <div class="filters__group">
+          <div class="filters__group-title">
+            <span class="filters__group-icon">${group.icon}</span>
+            <span>${group.label}</span>
+          </div>
+          <div class="filters__group-list">
+            ${groupCategories
+              .map(
+                (category) => `
+                <button class="chip ${group.colorClass} ${
+                  activeCategory === category.id ? "is-active" : ""
+                }" data-category="${category.id}">
+                  ${category.label} (${counts[category.id] ?? 0})
+                </button>
+              `
+              )
+              .join("")}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
   categoryFilters.innerHTML = `
     <button class="chip ${activeCategory === "all" ? "is-active" : ""}" data-category="all">
       すべて (${totalCount})
     </button>
-    ${categories
-      .map(
-        (category) => `
-        <button class="chip ${activeCategory === category.id ? "is-active" : ""}" data-category="${
-          category.id
-        }">
-          ${category.label} (${counts[category.id] ?? 0})
-        </button>
-      `
-      )
-      .join("")}
+    <div class="filters__groups">${groupSections}</div>
   `;
 };
 
@@ -140,9 +158,10 @@ const renderGroupChips = () => {
   modalGroupChips.innerHTML = faqGroups
     .map(
       (group) => `
-      <button class="chip ${selectedGroup === group.id ? "is-active" : ""}" type="button" data-group="${
-        group.id
-      }">
+      <button class="chip ${group.colorClass} ${
+        selectedGroup === group.id ? "is-active" : ""
+      }" type="button" data-group="${group.id}">
+        <span class="chip__icon">${group.icon}</span>
         ${group.label}
       </button>
     `
@@ -331,7 +350,7 @@ addCategoryButton.addEventListener("click", () => {
   const id = slugifyCategory(label) || `category-${Date.now()}`;
   const exists = categories.find((category) => category.id === id || category.label === label);
   if (!exists) {
-    categories.push({ id, label });
+    categories.push({ id, label, group: selectedGroup });
   }
   selectedCategory = id;
   newCategoryInput.value = "";
@@ -361,6 +380,10 @@ createFaqButton.addEventListener("click", () => {
   document.getElementById("answerInput").value = "";
   applyFilters();
   closeModal();
+});
+
+menuButton.addEventListener("click", () => {
+  alert("デモ: メニューを開きます。");
 });
 
 renderCategoryFilters();
