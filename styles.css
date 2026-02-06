@@ -287,10 +287,17 @@ body {
   border-radius: 999px;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: background 0.2s ease, border 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, border 0.2s ease, color 0.2s ease, transform 0.2s ease,
+    box-shadow 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(8, 14, 30, 0.35);
 }
 
 .chip.is-active {
@@ -487,10 +494,12 @@ body {
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .link-button:hover {
   color: var(--accent);
+  transform: translateY(-2px);
 }
 
 .modal {
