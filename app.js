@@ -70,6 +70,7 @@ const categories = [
   { id: "it", label: "IT・システム" },
   { id: "finance", label: "経理・財務" },
   { id: "legal", label: "法務・コンプライアンス" },
+  { id: "uncategorized", label: "未分類" },
 ];
 
 const faqList = document.getElementById("faqList");
@@ -130,9 +131,13 @@ const renderModalCategories = () => {
         }">
           ${category.label}
         </button>
-        <button class="category-delete" type="button" data-category-delete="${category.id}">
+        ${
+          category.id !== "uncategorized"
+            ? `<button class="category-delete" type="button" data-category-delete="${category.id}">
           削除
-        </button>
+        </button>`
+            : ""
+        }
       </div>
     `
     )
@@ -245,7 +250,15 @@ modalCategoryChips.addEventListener("click", (event) => {
   const index = categories.findIndex((category) => category.id === id);
   if (index === -1) return;
   categories.splice(index, 1);
-  faqs = faqs.filter((faq) => faq.category !== id);
+  faqs = faqs.map((faq) =>
+    faq.category === id
+      ? {
+          ...faq,
+          category: "uncategorized",
+          categoryLabel: "未分類",
+        }
+      : faq
+  );
   if (!categories.find((category) => category.id === selectedCategory)) {
     selectedCategory = categories[0]?.id ?? "general";
   }
