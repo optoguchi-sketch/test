@@ -3,8 +3,8 @@
   color: #e5e7eb;
   background-color: #0b1120;
   --bg: #0b1120;
-  --card: rgba(30, 41, 59, 0.92);
-  --card-strong: rgba(37, 52, 75, 0.96);
+  --card: rgba(24, 34, 53, 0.88);
+  --card-strong: rgba(28, 40, 62, 0.92);
   --border: rgba(148, 163, 184, 0.2);
   --text-muted: #94a3b8;
   --accent: #38bdf8;
@@ -21,7 +21,15 @@
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, #0b1120 0%, #0f172a 45%, #1e1b4b 100%);
+  background: linear-gradient(
+      120deg,
+      rgba(15, 23, 42, 0.95),
+      rgba(14, 165, 233, 0.2),
+      rgba(79, 70, 229, 0.28)
+    ),
+    linear-gradient(200deg, #0b1120, #0f172a 50%, #111827 100%);
+  background-size: 160% 160%;
+  animation: gradientFlow 18s ease-in-out infinite;
   background-attachment: fixed;
 }
 
@@ -521,6 +529,18 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
