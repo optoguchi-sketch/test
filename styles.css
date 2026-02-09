@@ -3,15 +3,15 @@
   color: #e5e7eb;
   background-color: #0b1120;
   --bg: #0b1120;
-  --card: rgba(15, 23, 42, 0.96);
-  --card-strong: rgba(17, 24, 39, 0.98);
+  --card: rgba(30, 41, 59, 0.92);
+  --card-strong: rgba(37, 52, 75, 0.96);
   --border: rgba(148, 163, 184, 0.2);
   --text-muted: #94a3b8;
   --accent: #38bdf8;
   --accent-soft: rgba(56, 189, 248, 0.12);
   --glow: 0 0 0 1px rgba(56, 189, 248, 0.18),
     0 22px 45px rgba(15, 23, 42, 0.55);
-  --shadow: 0 18px 40px rgba(2, 6, 23, 0.65);
+  --shadow: 0 18px 36px rgba(2, 6, 23, 0.55), 0 2px 8px rgba(56, 189, 248, 0.15);
   --transition: 180ms ease;
 }
 
@@ -21,9 +21,8 @@
 
 body {
   margin: 0;
-  background: var(--bg);
-  background-image: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), transparent 45%),
-    radial-gradient(circle at bottom, rgba(99, 102, 241, 0.08), transparent 55%);
+  background: linear-gradient(135deg, #0b1120 0%, #0f172a 45%, #1e1b4b 100%);
+  background-attachment: fixed;
 }
 
 .app {
