@@ -83,8 +83,6 @@ const tagFilters = document.getElementById("tagFilters");
 const stats = document.getElementById("stats");
 const suggestions = document.getElementById("suggestions");
 const categorySections = document.querySelectorAll(".category-block");
-const setupPanel = document.getElementById("setupPanel");
-const syncStatus = document.getElementById("syncStatus");
 
 const faqModal = document.getElementById("faqModal");
 const faqModalTitle = document.getElementById("faqModalTitle");
@@ -108,43 +106,15 @@ let middleSelection = MAJOR_CATEGORIES.reduce((acc, major) => {
   acc[major] = "all";
   return acc;
 }, {});
-let syncState = "checking";
 
 function hasSupabaseConfig() {
   return SUPABASE_URL && SUPABASE_ANON_KEY;
 }
 
-function updateSyncStatus(state) {
-  syncState = state;
-  if (!syncStatus) return;
-  syncStatus.classList.remove("is-active", "is-warning");
-  if (state === "supabase") {
-    syncStatus.textContent = "Supabase接続中";
-    syncStatus.classList.add("is-active");
-    return;
-  }
-  if (state === "error") {
-    syncStatus.textContent = "Supabase未接続";
-    syncStatus.classList.add("is-warning");
-    return;
-  }
-  if (state === "local") {
-    syncStatus.textContent = "ローカル保存";
-    return;
-  }
-  syncStatus.textContent = "確認中";
-}
-
 async function loadData() {
   if (hasSupabaseConfig()) {
     const remoteData = await loadDataFromSupabase();
-    if (remoteData) {
-      updateSyncStatus("supabase");
-      return remoteData;
-    }
-    updateSyncStatus("error");
-  } else {
-    updateSyncStatus("local");
+    if (remoteData) return remoteData;
   }
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
@@ -161,8 +131,7 @@ async function loadData() {
 
 async function saveData() {
   if (hasSupabaseConfig()) {
-    const saved = await saveDataToSupabase();
-    if (!saved) updateSyncStatus("error");
+    await saveDataToSupabase();
     return;
   }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -670,7 +639,7 @@ async function loadDataFromSupabase() {
 }
 
 async function saveDataToSupabase() {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+  await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -680,9 +649,6 @@ async function saveDataToSupabase() {
     },
     body: JSON.stringify({ id: SUPABASE_DOCUMENT_ID, data }),
   });
-  if (!response.ok) return false;
-  updateSyncStatus("supabase");
-  return true;
 }
 
 async function initApp() {

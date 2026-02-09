@@ -75,68 +75,6 @@ body {
   gap: 12px;
 }
 
-.setup-panel {
-  margin-top: 20px;
-  padding: 18px 22px;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  background: var(--card);
-  box-shadow: var(--shadow);
-  display: grid;
-  gap: 12px;
-}
-
-.setup-panel__header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.setup-panel__title {
-  margin: 0;
-  font-size: 1.05rem;
-}
-
-.setup-panel__status {
-  padding: 6px 14px;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  background: rgba(56, 189, 248, 0.12);
-  color: #d1e9ff;
-  border: 1px solid rgba(56, 189, 248, 0.32);
-}
-
-.setup-panel__status.is-active {
-  background: rgba(16, 185, 129, 0.14);
-  border-color: rgba(16, 185, 129, 0.4);
-  color: #baf7e3;
-}
-
-.setup-panel__status.is-warning {
-  background: rgba(249, 115, 22, 0.18);
-  border-color: rgba(249, 115, 22, 0.4);
-  color: #ffd6b5;
-}
-
-.setup-panel__desc {
-  margin: 0;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.setup-panel__steps {
-  margin: 0;
-  padding-left: 18px;
-  display: grid;
-  gap: 6px;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
 .btn {
   border-radius: 12px;
   border: 1px solid transparent;
