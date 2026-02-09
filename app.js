@@ -296,6 +296,22 @@ categoryFilters.addEventListener("click", (event) => {
 });
 
 faqList.addEventListener("click", (event) => {
+  const editButton = event.target.closest("[data-edit]");
+  if (editButton) {
+    const targetId = Number(editButton.dataset.edit);
+    const faq = faqs.find((item) => item.id === targetId);
+    if (faq) {
+      openEditModal(faq);
+    }
+    return;
+  }
+  const deleteButton = event.target.closest("[data-delete]");
+  if (deleteButton) {
+    const targetId = Number(deleteButton.dataset.delete);
+    faqs = faqs.filter((faq) => faq.id !== targetId);
+    applyFilters();
+    return;
+  }
   const header = event.target.closest("[data-toggle]");
   if (header) {
     const card = header.parentElement;
@@ -309,18 +325,6 @@ faqList.addEventListener("click", (event) => {
       }
     }
   }
-  if (event.target.matches("[data-edit]")) {
-    const targetId = Number(event.target.dataset.edit);
-    const faq = faqs.find((item) => item.id === targetId);
-    if (faq) {
-      openEditModal(faq);
-    }
-  }
-  if (event.target.matches("[data-delete]")) {
-    const targetId = Number(event.target.dataset.delete);
-    faqs = faqs.filter((faq) => faq.id !== targetId);
-    applyFilters();
-  }
 });
 
 const openModal = () => {
@@ -331,6 +335,7 @@ const openModal = () => {
 const closeModal = () => {
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
+  resetModalForm();
 };
 
 const resetModalForm = () => {
