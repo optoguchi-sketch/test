@@ -97,10 +97,12 @@ const addCategoryButton = document.getElementById("addCategory");
 const modal = document.getElementById("faqModal");
 const openModalButton = document.getElementById("openModal");
 const createFaqButton = document.getElementById("createFaq");
+const modalTitle = document.getElementById("modalTitle");
 
 let activeCategory = "all";
 let selectedCategory = categories[0]?.id ?? "general";
 let selectedGroup = faqGroups[0]?.id ?? "other";
+let editingFaqId = null;
 
 const slugifyCategory = (value) =>
   value
@@ -308,7 +310,11 @@ faqList.addEventListener("click", (event) => {
     }
   }
   if (event.target.matches("[data-edit]")) {
-    alert("デモ: FAQの編集画面へ遷移します。");
+    const targetId = Number(event.target.dataset.edit);
+    const faq = faqs.find((item) => item.id === targetId);
+    if (faq) {
+      openEditModal(faq);
+    }
   }
   if (event.target.matches("[data-delete]")) {
     const targetId = Number(event.target.dataset.delete);
@@ -327,12 +333,38 @@ const closeModal = () => {
   modal.setAttribute("aria-hidden", "true");
 };
 
-openModalButton.addEventListener("click", () => {
-  openModalButton.classList.add("is-pulse");
-  setTimeout(() => openModalButton.classList.remove("is-pulse"), 500);
+const resetModalForm = () => {
+  document.getElementById("questionInput").value = "";
+  document.getElementById("answerInput").value = "";
+  editingFaqId = null;
+  modalTitle.textContent = "新規FAQを作成";
+  createFaqButton.textContent = "作成する";
+};
+
+const openCreateModal = () => {
+  resetModalForm();
   renderGroupChips();
   renderModalCategories();
   openModal();
+};
+
+const openEditModal = (faq) => {
+  editingFaqId = faq.id;
+  selectedGroup = faq.group ?? "other";
+  selectedCategory = faq.category ?? "uncategorized";
+  document.getElementById("questionInput").value = faq.question;
+  document.getElementById("answerInput").value = faq.answer;
+  modalTitle.textContent = "FAQを編集";
+  createFaqButton.textContent = "更新する";
+  renderGroupChips();
+  renderModalCategories();
+  openModal();
+};
+
+openModalButton.addEventListener("click", () => {
+  openModalButton.classList.add("is-pulse");
+  setTimeout(() => openModalButton.classList.remove("is-pulse"), 500);
+  openCreateModal();
 });
 
 modal.addEventListener("click", (event) => {
@@ -414,17 +446,32 @@ createFaqButton.addEventListener("click", () => {
   }
   const category = categories.find((item) => item.id === selectedCategory) ?? categories[0];
   const group = faqGroups.find((item) => item.id === selectedGroup) ?? faqGroups[0];
-  faqs.unshift({
-    id: Date.now(),
-    group: group.id,
-    category: category.id,
-    categoryLabel: category.label,
-    question,
-    answer,
-    updatedAt: new Date().toISOString().slice(0, 10).replace(/-/g, "/"),
-  });
-  document.getElementById("questionInput").value = "";
-  document.getElementById("answerInput").value = "";
+  if (editingFaqId) {
+    faqs = faqs.map((faq) =>
+      faq.id === editingFaqId
+        ? {
+            ...faq,
+            group: group.id,
+            category: category.id,
+            categoryLabel: category.label,
+            question,
+            answer,
+            updatedAt: new Date().toISOString().slice(0, 10).replace(/-/g, "/"),
+          }
+        : faq
+    );
+  } else {
+    faqs.unshift({
+      id: Date.now(),
+      group: group.id,
+      category: category.id,
+      categoryLabel: category.label,
+      question,
+      answer,
+      updatedAt: new Date().toISOString().slice(0, 10).replace(/-/g, "/"),
+    });
+  }
+  resetModalForm();
   applyFilters();
   closeModal();
 });
