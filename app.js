@@ -1,6 +1,6 @@
 const STORAGE_KEY = "officePartnerFaqData";
-const SUPABASE_URL = "";
-const SUPABASE_ANON_KEY = "";
+const SUPABASE_URL = "https://mmpviyikbxyqipmxjtyu.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Xf6w0TQgBN2WD8oB1z2Vug_rqKLlF56";
 const SUPABASE_TABLE = "faq_documents";
 const SUPABASE_DOCUMENT_ID = 1;
 const MAJOR_CATEGORIES = ["出品対応", "メール対応", "その他"];
