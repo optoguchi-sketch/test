@@ -77,6 +77,10 @@ body {
   color: inherit;
   transition: transform var(--transition), box-shadow var(--transition),
     border-color var(--transition), background var(--transition), color var(--transition);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn--primary {
@@ -94,6 +98,11 @@ body {
 .btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--glow);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25), var(--glow);
 }
 
 .search-panel {
@@ -302,6 +311,14 @@ body {
   display: flex;
   gap: 8px;
   align-items: center;
+  flex: 1;
+}
+
+.middle-item__name .icon-button {
+  width: 100%;
+  text-align: left;
+  padding: 6px 4px;
+  border-radius: 8px;
 }
 
 .middle-item__count {
@@ -315,11 +332,14 @@ body {
   cursor: pointer;
   color: var(--text-muted);
   transition: color var(--transition), transform var(--transition);
+  padding: 4px;
+  border-radius: 8px;
 }
 
 .icon-button:hover {
   color: #e2e8f0;
   transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.25), 0 8px 20px rgba(15, 23, 42, 0.5);
 }
 
 .icon-button:disabled {
