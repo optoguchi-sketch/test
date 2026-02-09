@@ -21,6 +21,21 @@
         </div>
       </header>
 
+      <section class="setup-panel" id="setupPanel">
+        <div class="setup-panel__header">
+          <h2 class="setup-panel__title">共有設定チェック</h2>
+          <span class="setup-panel__status" id="syncStatus">確認中</span>
+        </div>
+        <p class="setup-panel__desc">
+          共有ストレージ（Supabase）に接続できると、全員の編集が即時反映されます。
+        </p>
+        <ol class="setup-panel__steps">
+          <li>faq_documents に <code>id = 1</code> / <code>data = {}</code> の行を追加</li>
+          <li>RLS ポリシーで anon の読み書きを許可</li>
+          <li>Netlify へ再アップロード → 別端末で表示確認</li>
+        </ol>
+      </section>
+
       <section class="search-panel">
         <div class="search-panel__row">
           <label class="field-label" for="searchInput">全文検索</label>
