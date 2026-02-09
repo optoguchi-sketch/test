@@ -59,7 +59,8 @@ body {
 
 .topbar__title {
   margin: 0;
-  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-size: clamp(2rem, 3.4vw, 2.9rem);
+  text-shadow: 0 12px 30px rgba(14, 165, 233, 0.25);
 }
 
 .topbar__lead {
@@ -226,6 +227,7 @@ body {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 24px;
+  align-items: start;
 }
 
 .category-block {
@@ -237,6 +239,7 @@ body {
   gap: 18px;
   box-shadow: var(--shadow);
   transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  align-self: start;
 }
 
 .category-block:hover {
