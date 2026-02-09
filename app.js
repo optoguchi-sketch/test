@@ -359,15 +359,21 @@ modalCategoryChips.addEventListener("click", (event) => {
           ...faq,
           category: "uncategorized",
           categoryLabel: "未分類",
+          group: "other",
         }
       : faq
   );
   if (!categories.find((category) => category.id === selectedCategory)) {
-    selectedCategory = categories[0]?.id ?? "general";
+    const fallbackCategories = getCategoriesForGroup(selectedGroup);
+    selectedCategory = fallbackCategories[0]?.id ?? "uncategorized";
+    if (selectedCategory === "uncategorized" && selectedGroup !== "other") {
+      selectedGroup = "other";
+    }
   }
   if (activeCategory === id) {
     activeCategory = "uncategorized";
   }
+  renderGroupChips();
   renderModalCategories();
   applyFilters();
 });
