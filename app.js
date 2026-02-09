@@ -1,4 +1,8 @@
 const STORAGE_KEY = "officePartnerFaqData";
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
+const SUPABASE_TABLE = "faq_documents";
+const SUPABASE_DOCUMENT_ID = 1;
 const MAJOR_CATEGORIES = ["出品対応", "メール対応", "その他"];
 
 const defaultData = {
@@ -94,7 +98,7 @@ const categoryModal = document.getElementById("categoryModal");
 const categoryName = document.getElementById("categoryName");
 const saveCategory = document.getElementById("saveCategory");
 
-let data = loadData();
+let data = structuredClone(defaultData);
 let editingFaqId = null;
 let editingCategory = null;
 let activeTags = new Set();
@@ -103,7 +107,15 @@ let middleSelection = MAJOR_CATEGORIES.reduce((acc, major) => {
   return acc;
 }, {});
 
-function loadData() {
+function hasSupabaseConfig() {
+  return SUPABASE_URL && SUPABASE_ANON_KEY;
+}
+
+async function loadData() {
+  if (hasSupabaseConfig()) {
+    const remoteData = await loadDataFromSupabase();
+    if (remoteData) return remoteData;
+  }
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultData));
@@ -117,7 +129,11 @@ function loadData() {
   }
 }
 
-function saveData() {
+async function saveData() {
+  if (hasSupabaseConfig()) {
+    await saveDataToSupabase();
+    return;
+  }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
@@ -395,7 +411,7 @@ function openFaqEditor(faq) {
   openModal(faqModal);
 }
 
-function saveFaqData() {
+async function saveFaqData() {
   const title = faqTitle.value.trim();
   const body = faqBody.value.trim();
   if (!title || !body) {
@@ -433,7 +449,7 @@ function saveFaqData() {
       updatedAt: formatDate(),
     });
   }
-  saveData();
+  await saveData();
   renderAll();
   closeModal(faqModal);
 }
@@ -446,7 +462,7 @@ function openCategoryEditor(major, middleId) {
   openModal(categoryModal);
 }
 
-function saveCategoryData() {
+async function saveCategoryData() {
   if (!editingCategory) return;
   const { major, middleId } = editingCategory;
   const middleList = getMiddleCategories(major);
@@ -458,12 +474,12 @@ function saveCategoryData() {
     return;
   }
   middle.name = name;
-  saveData();
+  await saveData();
   renderAll();
   closeModal(categoryModal);
 }
 
-function addMiddleCategory(major, name) {
+async function addMiddleCategory(major, name) {
   if (!name) return;
   const middleList = getMiddleCategories(major);
   if (middleList.some((item) => item.name === name)) {
@@ -471,11 +487,11 @@ function addMiddleCategory(major, name) {
     return;
   }
   middleList.push({ id: generateId("middle"), name, locked: false });
-  saveData();
+  await saveData();
   renderAll();
 }
 
-function deleteMiddleCategory(major, middleId) {
+async function deleteMiddleCategory(major, middleId) {
   const middleList = getMiddleCategories(major);
   const middle = middleList.find((item) => item.id === middleId);
   if (!middle || middle.locked) return;
@@ -500,7 +516,7 @@ function deleteMiddleCategory(major, middleId) {
     middleSelection[major] = "all";
   }
 
-  saveData();
+  await saveData();
   renderAll();
 }
 
@@ -548,9 +564,13 @@ faqMajor.addEventListener("change", (event) => {
   updateMiddleOptions(event.target.value);
 });
 
-saveFaq.addEventListener("click", saveFaqData);
+saveFaq.addEventListener("click", () => {
+  void saveFaqData();
+});
 
-saveCategory.addEventListener("click", saveCategoryData);
+saveCategory.addEventListener("click", () => {
+  void saveCategoryData();
+});
 
 [faqModal, categoryModal].forEach((modal) => {
   modal.addEventListener("click", (event) => {
@@ -572,7 +592,7 @@ categorySections.forEach((section) => {
     if (addButton) {
       const input = section.querySelector(`[data-middle-input="${major}"]`);
       const name = input.value.trim();
-      addMiddleCategory(major, name);
+      void addMiddleCategory(major, name);
       input.value = "";
       return;
     }
@@ -583,7 +603,7 @@ categorySections.forEach((section) => {
     }
     const deleteButton = event.target.closest("[data-middle-delete]");
     if (deleteButton) {
-      deleteMiddleCategory(major, deleteButton.dataset.middleDelete);
+      void deleteMiddleCategory(major, deleteButton.dataset.middleDelete);
       return;
     }
     const faqEdit = event.target.closest("[data-faq-edit]");
@@ -597,10 +617,43 @@ categorySections.forEach((section) => {
       const confirmDelete = confirm("このFAQを削除しますか？");
       if (!confirmDelete) return;
       data.faqs = data.faqs.filter((item) => item.id !== faqDelete.dataset.faqDelete);
-      saveData();
-      renderAll();
+      void saveData().then(renderAll);
     }
   });
 });
 
-renderAll();
+async function loadDataFromSupabase() {
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?id=eq.${SUPABASE_DOCUMENT_ID}&select=data`,
+    {
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+    }
+  );
+  if (!response.ok) return null;
+  const payload = await response.json();
+  if (!payload.length) return null;
+  return payload[0].data;
+}
+
+async function saveDataToSupabase() {
+  await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      Prefer: "resolution=merge-duplicates",
+    },
+    body: JSON.stringify({ id: SUPABASE_DOCUMENT_ID, data }),
+  });
+}
+
+async function initApp() {
+  data = await loadData();
+  renderAll();
+}
+
+void initApp();
