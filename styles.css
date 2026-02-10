@@ -51,7 +51,6 @@ body {
   top: 0;
   z-index: 8;
   padding: 12px 0;
-  backdrop-filter: blur(8px);
 }
 
 .topbar__eyebrow {
@@ -634,19 +633,17 @@ body {
   }
 
   .topbar__actions {
-    position: fixed;
-    right: 16px;
-    bottom: 18px;
-    z-index: 20;
-    width: auto;
-  }
-
-  .topbar__actions .btn {
-    width: auto;
-    min-height: 52px;
+    width: 100%;
+    display: block;
+    margin-top: 10px;
   }
 
   .topbar__actions .btn--fab {
+    position: fixed;
+    right: 16px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    z-index: 20;
+    width: auto;
     min-height: 52px;
     border-radius: 999px;
     padding-inline: 20px;
@@ -754,12 +751,9 @@ body {
     padding: 20px 12px 96px;
   }
 
-  .topbar__actions {
-    right: 12px;
-    bottom: 14px;
-  }
-
   .topbar__actions .btn--fab {
+    right: 12px;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
     min-height: 50px;
     padding-inline: 16px;
     font-size: 0.95rem;
