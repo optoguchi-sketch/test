@@ -564,10 +564,74 @@ body {
 @media (max-width: 720px) {
   .app {
     padding: 28px 16px 60px;
+    gap: 18px;
+  }
+
+  .topbar {
+    gap: 14px;
+  }
+
+  .topbar__eyebrow {
+    font-size: 0.78rem;
+  }
+
+  .topbar__title {
+    font-size: clamp(1.6rem, 9vw, 2.05rem);
+    line-height: 1.2;
+    word-break: keep-all;
+  }
+
+  .topbar__lead {
+    margin-top: 8px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .topbar__actions {
+    width: 100%;
+  }
+
+  .topbar__actions .btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .search-panel {
+    padding: 16px;
+    border-radius: 16px;
   }
 
   .search-box {
     grid-template-columns: 1fr;
+  }
+
+  .search-box .btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .category-block {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .category-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .middle-item {
+    grid-template-columns: 1fr auto;
+  }
+
+  .middle-item__count {
+    grid-column: 1 / -1;
+  }
+
+  .middle-item .icon-button[data-middle-delete] {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .middle-header {
@@ -586,5 +650,62 @@ body {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .faq-card {
+    padding: 12px 14px;
+  }
+
+  .faq-card__actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .faq-card__actions .icon-button {
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    background: rgba(148, 163, 184, 0.08);
+  }
+
+  .modal {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal__card {
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 90vh;
+    overflow: auto;
+    padding: 16px;
+  }
+
+  .modal__footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal__footer .btn {
+    width: 100%;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 420px) {
+  .app {
+    padding: 20px 12px 40px;
+  }
+
+  .topbar__title {
+    font-size: clamp(1.45rem, 8.4vw, 1.8rem);
+  }
+
+  .category-title {
+    font-size: 1.08rem;
+  }
+
+  .middle-item__name .icon-button {
+    padding-inline: 0;
+    font-size: 0.92rem;
   }
 }
