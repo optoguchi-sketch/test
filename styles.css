@@ -295,6 +295,18 @@ body {
   gap: 12px;
 }
 
+.middle-header__main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.middle-toggle {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+}
+
 .middle-add {
   display: flex;
   gap: 8px;
@@ -310,6 +322,11 @@ body {
 .middle-list {
   display: grid;
   gap: 8px;
+}
+
+.middle-section.is-collapsed .middle-add,
+.middle-section.is-collapsed .middle-list {
+  display: none;
 }
 
 .middle-item {
@@ -378,13 +395,13 @@ body {
   border: 1px solid var(--border);
   border-radius: 16px;
   padding: 14px 16px;
-  background: var(--card-strong);
+  background: rgba(20, 33, 53, 0.95);
   transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
 .faq-card[open] {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: var(--glow);
+  border-color: rgba(52, 211, 153, 0.65);
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.28), 0 18px 34px rgba(6, 78, 59, 0.28);
   transform: translateY(-2px);
 }
 
@@ -692,6 +709,11 @@ body {
   .middle-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .middle-header__main {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .middle-add {

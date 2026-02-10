@@ -106,6 +106,7 @@ let middleSelection = MAJOR_CATEGORIES.reduce((acc, major) => {
   acc[major] = "all";
   return acc;
 }, {});
+let middlePanelOpen = {};
 
 function hasSupabaseConfig() {
   return SUPABASE_URL && SUPABASE_ANON_KEY;
@@ -261,6 +262,12 @@ function renderCategory(major) {
       : filteredFaqs.filter((faq) => faq.middleCategoryId === selectedMiddle);
 
   const middleList = getMiddleCategories(major);
+  const shouldCollapseByDefault = middleList.length >= 6;
+  if (!(major in middlePanelOpen)) {
+    middlePanelOpen[major] = !shouldCollapseByDefault;
+  }
+  const isOpen = middlePanelOpen[major];
+  const middleToggleLabel = isOpen ? "中カテゴリを閉じる" : "中カテゴリを開く";
 
   section.innerHTML = `
     <div class="category-header">
@@ -272,9 +279,12 @@ function renderCategory(major) {
       </div>
       <span class="category-meta">中カテゴリ: ${middleList.length}件</span>
     </div>
-    <div class="middle-section">
+    <div class="middle-section ${isOpen ? "" : "is-collapsed"}">
       <div class="middle-header">
-        <span class="field-label">中カテゴリ管理</span>
+        <div class="middle-header__main">
+          <span class="field-label">中カテゴリ管理</span>
+          <button class="btn btn--ghost middle-toggle" data-middle-toggle="${major}" type="button">${middleToggleLabel}</button>
+        </div>
         <div class="middle-add">
           <input type="text" placeholder="中カテゴリを追加" data-middle-input="${major}" />
           <button class="btn btn--ghost" data-middle-add="${major}" type="button">追加</button>
@@ -362,6 +372,11 @@ function renderAll() {
   renderTagFilters();
   renderStats();
   MAJOR_CATEGORIES.forEach(renderCategory);
+}
+
+function toggleMiddleSection(major) {
+  middlePanelOpen[major] = !middlePanelOpen[major];
+  renderCategory(major);
 }
 
 function openModal(modal) {
@@ -594,6 +609,11 @@ categorySections.forEach((section) => {
       const name = input.value.trim();
       void addMiddleCategory(major, name);
       input.value = "";
+      return;
+    }
+    const toggleButton = event.target.closest("[data-middle-toggle]");
+    if (toggleButton) {
+      toggleMiddleSection(major);
       return;
     }
     const editButton = event.target.closest("[data-middle-edit]");
