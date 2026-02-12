@@ -3,80 +3,103 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>社内FAQポータル</title>
+    <title>オフィスパートナー　社内FAQ</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="page">
-      <header class="hero">
-        <div class="hero__glow"></div>
-        <div class="hero__content">
-          <div class="hero__icon" aria-hidden="true">📘</div>
-          <p class="hero__eyebrow">チームで育てるナレッジベース</p>
-          <h1 class="hero__title">社内FAQポータル</h1>
-          <p class="hero__lead">
-            いつでも検索、カテゴリで整理。スタッフが編集可能なFAQを集約し、サポート体験を刷新します。
+    <div class="app">
+      <header class="topbar">
+        <div>
+          <p class="topbar__eyebrow">社内専用ナレッジベース</p>
+          <h1 class="topbar__title">📚️オフィスパートナー　社内FAQ</h1>
+          <p class="topbar__lead">
+            迷わず・最速で・直感的に。検索から更新まで3クリック以内で完結する、軽量FAQ。
           </p>
-          <div class="hero__search">
-            <input
-              id="searchInput"
-              type="search"
-              placeholder="質問を検索..."
-              aria-label="FAQを検索"
-            />
-            <button class="btn btn--ghost" id="searchAction">検索</button>
-          </div>
-          <div class="hero__actions">
-            <button class="btn btn--primary" id="openModal">＋ 新規FAQを作成</button>
-            <button class="btn btn--outline">使い方ガイド</button>
-          </div>
+        </div>
+        <div class="topbar__actions">
+          <button class="btn btn--primary btn--fab" id="openFaqModal">＋ FAQを作成</button>
         </div>
       </header>
 
-      <main class="content">
-        <section class="filters">
-          <div class="filters__header">
-            <h2>カテゴリ</h2>
-            <span id="resultCount" class="filters__count">7件のFAQが見つかりました</span>
+      <section class="search-panel">
+        <div class="search-panel__row">
+          <label class="field-label" for="searchInput">全文検索</label>
+          <div class="search-box">
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="タイトル・本文・タグを検索"
+              autocomplete="off"
+            />
+            <button class="btn btn--ghost" id="clearSearch" type="button">クリア</button>
+            <div class="suggestions" id="suggestions" aria-live="polite"></div>
           </div>
-          <div class="filters__list" id="categoryFilters">
-            <button class="chip is-active" data-category="all">すべて (7)</button>
-            <button class="chip" data-category="general">一般 (2)</button>
-            <button class="chip" data-category="hr">人事・労務 (2)</button>
-            <button class="chip" data-category="it">IT・システム (1)</button>
-            <button class="chip" data-category="finance">経理・財務 (1)</button>
-            <button class="chip" data-category="legal">法務・コンプライアンス (1)</button>
-          </div>
-        </section>
+          <div class="stats" id="stats"></div>
+        </div>
+        <div class="search-panel__row">
+          <label class="field-label">タグフィルタ</label>
+          <div class="chip-group" id="tagFilters"></div>
+        </div>
+      </section>
 
-        <section class="faq" id="faqList"></section>
+      <main class="content">
+        <section class="category-grid">
+          <section class="category-block" data-major="出品対応"></section>
+          <section class="category-block" data-major="メール対応"></section>
+        </section>
+        <section class="category-block category-block--full" data-major="その他"></section>
       </main>
     </div>
 
     <div class="modal" id="faqModal" aria-hidden="true">
       <div class="modal__backdrop" data-close="true"></div>
-      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="faqModalTitle">
         <div class="modal__header">
-          <h2 id="modalTitle">新規FAQを作成</h2>
+          <h2 id="faqModalTitle">FAQを作成</h2>
           <button class="icon-button" data-close="true" aria-label="閉じる">✕</button>
         </div>
         <div class="modal__body">
-          <label class="field-label">カテゴリ</label>
-          <div class="modal__chips">
-            <button class="chip is-active" type="button">一般</button>
-            <button class="chip" type="button">人事・労務</button>
-            <button class="chip" type="button">IT・システム</button>
-            <button class="chip" type="button">経理・財務</button>
-            <button class="chip" type="button">法務・コンプライアンス</button>
+          <label class="field-label" for="faqTitle">タイトル</label>
+          <input id="faqTitle" type="text" placeholder="例：出品時の初期設定は？" />
+
+          <label class="field-label" for="faqBody">本文（Markdown可）</label>
+          <textarea id="faqBody" rows="6" placeholder="手順・注意点を入力"></textarea>
+
+          <div class="form-grid">
+            <div>
+              <label class="field-label" for="faqMajor">大カテゴリ</label>
+              <select id="faqMajor"></select>
+            </div>
+            <div>
+              <label class="field-label" for="faqMiddle">中カテゴリ</label>
+              <select id="faqMiddle"></select>
+            </div>
           </div>
-          <label class="field-label" for="questionInput">質問</label>
-          <input id="questionInput" type="text" placeholder="よくある質問を入力してください" />
-          <label class="field-label" for="answerInput">回答</label>
-          <textarea id="answerInput" rows="5" placeholder="回答を入力してください"></textarea>
+
+          <label class="field-label" for="faqTags">タグ（カンマ区切り）</label>
+          <input id="faqTags" type="text" placeholder="例：初期設定, マニュアル" />
         </div>
         <div class="modal__footer">
-          <button class="btn btn--ghost" data-close="true">キャンセル</button>
-          <button class="btn btn--primary" id="createFaq">作成する</button>
+          <button class="btn btn--ghost" data-close="true" type="button">キャンセル</button>
+          <button class="btn btn--primary" id="saveFaq" type="button">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="categoryModal" aria-hidden="true">
+      <div class="modal__backdrop" data-close="true"></div>
+      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+        <div class="modal__header">
+          <h2 id="categoryModalTitle">中カテゴリ名を変更</h2>
+          <button class="icon-button" data-close="true" aria-label="閉じる">✕</button>
+        </div>
+        <div class="modal__body">
+          <label class="field-label" for="categoryName">中カテゴリ名</label>
+          <input id="categoryName" type="text" />
+        </div>
+        <div class="modal__footer">
+          <button class="btn btn--ghost" data-close="true" type="button">キャンセル</button>
+          <button class="btn btn--primary" id="saveCategory" type="button">変更する</button>
         </div>
       </div>
     </div>
